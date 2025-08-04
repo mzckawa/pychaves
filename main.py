@@ -1,34 +1,58 @@
-import pygame 
+import pygame
+import math
 
 pygame.init()
 
-screen = pygame.display.set_mode((800, 640))
-
-chaves_img = pygame.image.load('chaves_1.jpg').convert()
-chaves_img = pygame.transform.scale(chaves_img, (chaves_img.get_width() * 3, chaves_img.get_height() * 2))
-chaves_img = pygame.transform.flip(chaves_img, False, True)
-chaves_img.set_colorkey((0, 0, 0))
-
-running = True
-x = 0 
+#define tempo do jogo
 clock = pygame.time.Clock()
-delta_time = 0.1
+FPS = 60
 
-while running:
+#dimencionamento da tela
+comprimeto_tela = 860
+largura_tela = 640
 
-    screen.fill((255, 205, 255))
+#criando a tela
+tela = pygame.display.set_mode((comprimeto_tela, largura_tela))
+pygame.display.set_caption("pychaves")
 
-    chaves_img.set_alpha(max(0, 255))
-    screen.blit(chaves_img, (x, 30))
+#receber a imagem dos arquivos
+imagem_cenario = pygame.image.load("cenario_jogo.jpg").convert()
+#convercao da imagem
+imagem_cenario = pygame.transform.scale(imagem_cenario, (2*comprimeto_tela/3, largura_tela))
+imagem_comprimento = imagem_cenario.get_width()
 
-    # x += 10 * delta_time
 
+#variaveis do jogo
+scroll = 0
+partes = math.ceil(comprimeto_tela/imagem_comprimento) + 2
+print(partes)
+#loop do jogo
+
+velocidade = 3
+run = True
+while run:
+
+    clock.tick(FPS)
+
+    #cenario infinito
+    for i in range (0, partes):
+        tela.blit(imagem_cenario, (i * imagem_comprimento + scroll, 0))
+    scroll -= velocidade
+
+    # resetando scroll 
+    if abs(scroll) > imagem_comprimento:
+        scroll = 0
+
+    #receber evento
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            run = False
 
-    pygame.time.wait(1)
-    pygame.display.flip()
-    clock.tick(60)
+    if velocidade == 8:
+        velocidade  = 8
+    else: 
+        velocidade += 0.0005
+
+    pygame.display.update()
 
 pygame.quit()
