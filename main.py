@@ -1,5 +1,6 @@
 import pygame
 import math
+from personagem import Jogador
 
 pygame.init()
 
@@ -28,6 +29,11 @@ partes = math.ceil(comprimeto_tela/imagem_comprimento) + 2
 print(partes)
 #loop do jogo
 
+chaves = Jogador(400, 400, 100, 100)
+obstaculos = [
+    pygame.Rect(300, 200, 100, 100)
+]
+
 velocidade = 3
 run = True
 while run:
@@ -38,6 +44,9 @@ while run:
     for i in range (0, partes):
         tela.blit(imagem_cenario, (i * imagem_comprimento + scroll, 0))
     scroll -= velocidade
+
+    teclas = pygame.key.get_pressed()
+    chaves.mover(teclas, obstaculos)
 
     # resetando scroll 
     if abs(scroll) > imagem_comprimento:
@@ -52,6 +61,8 @@ while run:
         velocidade  = 8
     else: 
         velocidade += 0.0005
+
+    chaves.desenhar(tela)
 
     pygame.display.update()
 
