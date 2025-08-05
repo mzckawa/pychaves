@@ -9,13 +9,14 @@ class Jogador:
     
     def mover(self, teclas, obstaculos):
         movimento = pygame.Vector2(0, 0)
+        movimento.x = - self.velocidade
 
         if teclas[pygame.K_w]:
             movimento.y = -self.velocidade
         if teclas[pygame.K_s]:
             movimento.y = self.velocidade
         if teclas[pygame.K_a]:
-            movimento.x = - self.velocidade
+            movimento.x = - self.velocidade*1.5
         if teclas[pygame.K_d]:
             movimento.x = self.velocidade
         
