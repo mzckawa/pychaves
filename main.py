@@ -31,7 +31,10 @@ print(partes)
 
 chaves = Jogador(400, 400, 100, 100)
 obstaculos = [
-    pygame.Rect(300, 200, 100, 100)
+    pygame.Rect(0 , 300, 860, 10),
+    pygame.Rect(-100 , 0, 1, 640),
+    pygame.Rect(860 , 0, 1, 640),
+    pygame.Rect(0 , 640, 860, 1)
 ]
 
 velocidade = 3
