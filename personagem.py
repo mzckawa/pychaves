@@ -4,12 +4,13 @@ class Jogador:
     def __init__(self, x , y, largura, altura):
         self.rect = pygame.Rect(x, y, largura, altura)
         self.velocidade = 5
+        self.velocidade_correnteza = 0
         imagem = pygame.image.load("Chaves.png").convert_alpha()
         self.imagem = pygame.transform.scale(imagem, (largura, altura))  # Redimensiona para caber no retângulo
     
     def mover(self, teclas, obstaculos):
         movimento = pygame.Vector2(0, 0)
-        movimento.x = - self.velocidade
+        movimento.x = - self.velocidade_correnteza
 
         if teclas[pygame.K_w]:
             movimento.y = -self.velocidade
@@ -39,3 +40,6 @@ class Jogador:
 
     def desenhar(self, tela):
         tela.blit(self.imagem, self.rect)
+    
+    def get_velocidade_correnteza(self, velocidade):
+        self.velocidade_correnteza = velocidade
