@@ -38,6 +38,7 @@ obstaculos = [
 ]
 
 velocidade = 3
+chaves.get_velocidade_correnteza(3)
 run = True
 while run:
 
@@ -60,10 +61,13 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
-    if velocidade == 8:
+    if velocidade >= 8:
         velocidade  = 8
     else: 
-        velocidade += 0.0005
+        #velocidade += 0.0005
+        velocidade += 8
+
+    chaves.get_velocidade_correnteza(0)
 
     chaves.desenhar(tela)
 
