@@ -38,11 +38,13 @@ obstaculos = [
 ]
 
 velocidade = 3
+#velocidade do cenario
+chaves.get_velocidade_correnteza(velocidade)
 run = True
 while run:
 
     clock.tick(FPS)
-
+    chaves.get_velocidade_correnteza(velocidade)
     #cenario infinito
     for i in range (0, partes):
         tela.blit(imagem_cenario, (i * imagem_comprimento + scroll, 0))
@@ -60,10 +62,12 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
-    if velocidade == 8:
-        velocidade  = 8
+    if velocidade >= 6:
+        velocidade  = 6
     else: 
-        velocidade += 0.0005
+        velocidade += 0.001
+
+    chaves.get_velocidade_correnteza(velocidade)
 
     chaves.desenhar(tela)
 
