@@ -2,7 +2,7 @@
 import pygame
 
 # criando a classe que será usada para criar o menu
-class menu:
+class classe_menu:
 
     # definindo os atributos da classe
     def __init__(self, tela_do_jogo):
@@ -18,6 +18,9 @@ class menu:
 
         # criando um atributo que vai servir para rodar o menu dentro de um WHILE até que algumas das opções seja selecionada (fazendo com que eu saia do menu)
         self.running = True
+
+        # criei essa variável para mostrar pro meu programa que eu quero fechar a tela do jogo durante o menu
+        self.sair_do_jogo = False
 
         #README talvez eu nem use isso, já que eu só quero colocar caixas seletoras na tela, e não texto em si
         # guardando uma fonte para ser usada na tela do meu jogo
@@ -37,7 +40,35 @@ class menu:
     # função para desenhar as coisas do menu na tela do jogo
     def desenhar(self):
 
-        pass
+        # criando a imagem de fundo da tela 
+        fundo = pygame.image.load("imagem_menu_jogo.jpg")
+
+        # redimensionando a imagem de fundo - posso mudar as coordenadas depois
+        fundo = pygame.transform.scale(fundo, (640, 640))
+
+        # desenhando a imagem na tela
+        self.screen.blit(fundo, (110, 0))
+
+        # Define a posição e dimensões do retângulo
+        if self.selected_index == 0:
+
+            y_retangulo = 517
+
+        elif self.selected_index == 1:
+
+            y_retangulo = 572
+
+        x_retangulo = 320 # para passar para a opção de baixo, eu vou aumentar 55 na coordenada do retângulo
+        largura_ret, altura_ret = 220, 60
+
+        # Define a largura do contorno (10 pixels)
+        largura_contorno = 7
+
+        # Cria o retângulo seletor
+        retangulo_seletor = pygame.Rect(x_retangulo, y_retangulo, largura_ret, altura_ret)
+
+        # Desenha o retangulo seletor na tela
+        pygame.draw.rect(self.screen, self.color_selected, retangulo_seletor, largura_contorno)
 
     def pegar_eventos_teclado(self):
         
@@ -50,6 +81,9 @@ class menu:
                 # mudando o valor da variável que define se o menu está rodando na tela do jogo ou não
                 # provavelmente eu vou ter que colocar algum comando aqui para fechar a tela do jogo
                 self.running = False
+
+                # mudando o valor dessa variável (já que eu quero fechar a tela do jogo durante o menu)
+                self.sair_do_jogo = True
 
             # verificando se alguma tecla do teclado foi pressionada
             elif evento.type == pygame.KEYDOWN:
