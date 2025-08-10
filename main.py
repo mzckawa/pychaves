@@ -21,7 +21,7 @@ tela = pygame.display.set_mode((comprimeto_tela, largura_tela))
 pygame.display.set_caption("pychaves")
 
 #receber a imagem dos arquivos
-imagem_cenario = pygame.image.load("cenario_jogo.jpg").convert()
+imagem_cenario = pygame.image.load("imagens_jogo\cenario_jogo.jpg").convert()
 #convercao da imagem
 imagem_cenario = pygame.transform.scale(imagem_cenario, (2*comprimeto_tela/3, largura_tela))
 imagem_comprimento = imagem_cenario.get_width()
