@@ -72,6 +72,11 @@ class classe_menu:
 
     def pegar_eventos_teclado(self):
         
+        # carregando os efeitos sonoros do jogo
+        #TODO verificar se isso gasta muita memória
+        som_selecao_opcoes = pygame.mixer.Sound("som_selecao_opcoes_menu_8bit.wav")
+        som_start = pygame.mixer.Sound("som_start_8bit.wav")
+        
         # verificando os eventos do teclado
         for evento in pygame.event.get():
             
@@ -101,6 +106,8 @@ class classe_menu:
                         # deixei a "len" aí porque, futuramente, talvez eu coloque mais uma opção no menu
                         self.selected_index = len(self.options) - 1
 
+                    som_selecao_opcoes.play()
+
                 # verificando se a tecla clicada foi a SETA PARA BAIXO
                 elif evento.key == pygame.K_DOWN:
                     
@@ -113,6 +120,8 @@ class classe_menu:
                         # esse é o indice da opção mais alta
                         self.selected_index = 0
 
+                    som_selecao_opcoes.play()
+
                 # verificando se a tecla clicada foi o ENTER
                 elif evento.key == pygame.K_RETURN:
                         
@@ -123,6 +132,8 @@ class classe_menu:
                         
                         # mudando o valor dessa variável para o menu parar de rodar
                         self.running = False
+
+                        som_start.play()
 
                     elif self.options[self.selected_index] == "CREDITS":
                         
