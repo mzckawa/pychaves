@@ -24,7 +24,7 @@ class classe_creditos:
         self.screen.fill((0, 0, 0))
 
         # carregando a imagem dos creditos
-        tela_de_creditos = pygame.image.load("imagem_creditos.png")
+        tela_de_creditos = pygame.image.load("imagens_jogo\imagem_creditos.png")
 
         # redimensionando a tela de créditos
         tela_de_creditos = pygame.transform.scale(tela_de_creditos, (640, 640))

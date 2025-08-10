@@ -5,7 +5,7 @@ class Jogador:
         self.rect = pygame.Rect(x, y, largura, altura)
         self.velocidade = 5
         self.velocidade_correnteza = 0
-        imagem = pygame.image.load("Chaves.png").convert_alpha()
+        imagem = pygame.image.load("imagens_jogo\Chaves.png").convert_alpha()
         self.imagem = pygame.transform.scale(imagem, (largura, altura))  # Redimensiona para caber no retângulo
     
     def mover(self, teclas, obstaculos):
