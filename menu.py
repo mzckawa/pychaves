@@ -44,22 +44,22 @@ class classe_menu:
         fundo = pygame.image.load("imagens_jogo/imagem_menu_jogo.png")
 
         # redimensionando a imagem de fundo - posso mudar as coordenadas depois
-        fundo = pygame.transform.scale(fundo, (640, 640))
+        fundo = pygame.transform.scale(fundo, (860, 640))
 
         # desenhando a imagem na tela
-        self.screen.blit(fundo, (110, 0))
+        self.screen.blit(fundo, (0, 0))
 
         # Define a posição e dimensões do retângulo
         if self.selected_index == 0:
 
-            y_retangulo = 517
+            y_retangulo = 495
 
         elif self.selected_index == 1:
 
-            y_retangulo = 572
+            y_retangulo = 545
 
         x_retangulo = 320 # para passar para a opção de baixo, eu vou aumentar 55 na coordenada do retângulo
-        largura_ret, altura_ret = 220, 60
+        largura_ret, altura_ret = 195, 60
 
         # Define a largura do contorno (10 pixels)
         largura_contorno = 7
@@ -139,6 +139,8 @@ class classe_menu:
                         
                         # mudando o valor dessa variável para o menu parar de rodar
                         self.running = False
+
+                        som_selecao_opcoes.play()
     
     def rodar_menu(self):
 

@@ -48,6 +48,9 @@ class classe_creditos:
         pygame.draw.rect(self.screen, (255, 0, 0), retangulo_seletor_creditos, largura_contorno_ret_cred)
 
     def pegar_eventos_teclado_creditos(self):
+        
+        # carregando o efeito sonoro
+        som_enter = pygame.mixer.Sound("efeitos_sonoros/som_selecao_opcoes_menu_8bit.wav")
 
         # verificando os eventos que o jogador vai mandar para mim
         for event in pygame.event.get():
@@ -66,6 +69,8 @@ class classe_creditos:
                 if event.key == pygame.K_RETURN:
                                         
                     self.running = False
+
+                    som_enter.play()
 
     def rodar_tela_creditos(self):
 
