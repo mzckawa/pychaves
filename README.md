@@ -1,4 +1,5 @@
-TITUTLO DO PROJETO: Pychaves
+*TITUTLO DO PROJETO*: 
+Pychaves
 
 MEMBROS DA EQUIPE:
 Alvaro Alexandre
