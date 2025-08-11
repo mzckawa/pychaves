@@ -41,7 +41,7 @@ class classe_menu:
     def desenhar(self):
 
         # criando a imagem de fundo da tela 
-        fundo = pygame.image.load("imagens_jogo\imagem_menu_jogo.jpg")
+        fundo = pygame.image.load("imagens_jogo/imagem_menu_jogo.jpg")
 
         # redimensionando a imagem de fundo - posso mudar as coordenadas depois
         fundo = pygame.transform.scale(fundo, (640, 640))
@@ -74,8 +74,8 @@ class classe_menu:
         
         #README carregando os efeitos sonoros do jogo
         #TODO verificar se isso gasta muita memória
-        som_selecao_opcoes = pygame.mixer.Sound("efeitos_sonoros\som_selecao_opcoes_menu_8bit.wav")
-        som_start = pygame.mixer.Sound("efeitos_sonoros\som_start_8bit.wav")
+        som_selecao_opcoes = pygame.mixer.Sound("efeitos_sonoros/som_selecao_opcoes_menu_8bit.wav")
+        som_start = pygame.mixer.Sound("efeitos_sonoros/som_start_8bit.wav")
         
         # verificando os eventos do teclado
         for evento in pygame.event.get():
