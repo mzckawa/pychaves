@@ -44,6 +44,13 @@ class Collectible:
         else:
             self.rect = pygame.Rect(self.x_pos, self.y_pos, 50, 50) 
 
+    def get_velocidade(self, velocidade):
+
+        self.speed = velocidade
+
+
+
+
 # naming some RGB tuples
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -85,7 +92,6 @@ class Collectible1(Collectible):
 
     def __init__(self, x_pos, y_pos):
         super().__init__(x_pos, y_pos)
-        self.speed = 20
 
     def draw_collec(self):
         pygame.draw.rect(screen, white, self.rect)
@@ -95,7 +101,7 @@ class Collectible2(Collectible):
 
     def __init__(self, x_pos, y_pos):
         super().__init__(x_pos, y_pos)
-        self.speed = 5
+        
 
     def draw_collec(self):
         pygame.draw.rect(screen, lilac, self.rect)
@@ -104,7 +110,16 @@ class Collectible3(Collectible):
 
     def __init__(self, x_pos, y_pos):
         super().__init__(x_pos, y_pos)
-        self.speed = 30
+        
+
+    def draw_collec(self):
+        pygame.draw.rect(screen, black, self.rect)
+
+class Collectible3(Collectible):
+
+    def __init__(self, x_pos, y_pos):
+        super().__init__(x_pos, y_pos)
+        
 
     def draw_collec(self):
         pygame.draw.rect(screen, black, self.rect)
