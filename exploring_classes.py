@@ -26,17 +26,17 @@ class Collectible:
         self.y_pos = y_pos
         self.width = 50
         self.height = 50
+        self.speed = 10
         self.rect = pygame.Rect(self.x_pos, self.y_pos, self.width, self.height)
         self.collected = False
         self.lost = False
-        self.adequate_distance = False # to help verifying whether the collectibles are not too close or overlapping each other
 
     def draw_collec(self):
         pygame.draw.rect(screen, lilac, self.rect)
 
     def movement(self):
 
-        self.x_pos -= 10
+        self.x_pos -= self.speed
 
         if self.x_pos < -2 * self.width: # in order to make the collectible disappear from the screen, but stop being drawn
             self.lost = True
@@ -55,7 +55,7 @@ fifth_height = height // 5
 
  # atstarts at 300
 
-def creating_collectibles():
+def creating_collectibles(classcollec):
     
     list_all = []
     list_y = [fifth_height, fifth_height * 2, fifth_height * 3, fifth_height * 4]
@@ -72,7 +72,7 @@ def creating_collectibles():
         list_y.append(y_collect)
 
         # creating the objects of the class Collectible with the generated random positions
-        collectible = Collectible(x_collect, y_collect)
+        collectible = classcollec(x_collect, y_collect)
 
         # adding the newly-created collectible to the list with the other collectibles of the same kind
         list_all.append(collectible)
@@ -81,7 +81,37 @@ def creating_collectibles():
 
 # creating lists to store the collectibles more easily
 
-all_collects_1, y_pos_collec_1 = creating_collectibles()
+class Collectible1(Collectible):
+
+    def __init__(self, x_pos, y_pos):
+        super().__init__(x_pos, y_pos)
+        self.speed = 20
+
+    def draw_collec(self):
+        pygame.draw.rect(screen, white, self.rect)
+
+   
+class Collectible2(Collectible):
+
+    def __init__(self, x_pos, y_pos):
+        super().__init__(x_pos, y_pos)
+        self.speed = 5
+
+    def draw_collec(self):
+        pygame.draw.rect(screen, lilac, self.rect)
+
+class Collectible3(Collectible):
+
+    def __init__(self, x_pos, y_pos):
+        super().__init__(x_pos, y_pos)
+        self.speed = 30
+
+    def draw_collec(self):
+        pygame.draw.rect(screen, black, self.rect)
+
+all_collects_1, y_pos_collec_1 = creating_collectibles(Collectible1)
+all_collects_2, y_pos_collec_2 = creating_collectibles(Collectible2)
+all_collects_3, y_pos_collec_3 = creating_collectibles(Collectible3)
 
 # creating a clock
 
@@ -124,6 +154,12 @@ while True:
     remaining_collect_1 = []
     remaining_y_pos_1 = []
 
+    remaining_collect_2 = []
+    remaining_y_pos_2 = []
+
+    remaining_collect_3 = []
+    remaining_y_pos_3 = []
+
     for collectible in all_collects_1:
 
         # creating the collision conditional
@@ -146,6 +182,55 @@ while True:
 
     if not all_collects_1 and not y_pos_collec_1: # let's go all over again!
 
-        all_collects_1, y_pos_collec_1 = creating_collectibles()
+        all_collects_1, y_pos_collec_1 = creating_collectibles(Collectible1)
+
+
+    for collectible in all_collects_2:
+
+        # creating the collision conditional
+        if player.colliderect(collectible):
+            collectible.collected = True
+
+        # keeping on drawing the collectible, if it was not caught by the player
+        if not collectible.collected:
+            collectible.draw_collec()
+            collectible.movement()
+
+        if not collectible.collected and not collectible.lost:
+
+            remaining_collect_2.append(collectible)
+            remaining_y_pos_2.append(collectible.y_pos)
+
+    # recreating the list of all collectibles only with the ones actually available
+    all_collects_2 = remaining_collect_2
+    y_pos_collec_2 = remaining_y_pos_2
+
+    if not all_collects_2 and not y_pos_collec_2: # let's go all over again!
+
+        all_collects_2, y_pos_collec_2 = creating_collectibles(Collectible2)
+
+    for collectible in all_collects_3:
+
+        # creating the collision conditional
+        if player.colliderect(collectible):
+            collectible.collected = True
+
+        # keeping on drawing the collectible, if it was not caught by the player
+        if not collectible.collected:
+            collectible.draw_collec()
+            collectible.movement()
+
+        if not collectible.collected and not collectible.lost:
+
+            remaining_collect_3.append(collectible)
+            remaining_y_pos_3.append(collectible.y_pos)
+
+    # recreating the list of all collectibles only with the ones actually available
+    all_collects_3 = remaining_collect_3
+    y_pos_collec_3 = remaining_y_pos_3
+
+    if not all_collects_3 and not y_pos_collec_3: # let's go all over again!
+
+        all_collects_3, y_pos_collec_3 = creating_collectibles(Collectible3)
 
     pygame.display.flip()
