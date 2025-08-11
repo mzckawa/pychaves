@@ -36,7 +36,7 @@ while run:
 
     if x <= 0:
         x = 860
-        y = randint(30, 640)
+        y = randint(30 , 640)
 
     if y >= 640:
         y=0
