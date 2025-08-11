@@ -88,7 +88,7 @@ def creating_collectibles(classcollec):
 
 # creating lists to store the collectibles more easily
 
-class Collectible1(Collectible):
+class Sanduiche(Collectible):
 
     def __init__(self, x_pos, y_pos):
         super().__init__(x_pos, y_pos)
@@ -96,8 +96,14 @@ class Collectible1(Collectible):
     def draw_collec(self):
         pygame.draw.rect(screen, white, self.rect)
 
-   
-class Collectible2(Collectible):
+    def adicionar_vida(self, vida):
+
+        if self.collected:
+            vida += 1
+        
+        return vida 
+
+class Passagem(Collectible):
 
     def __init__(self, x_pos, y_pos):
         super().__init__(x_pos, y_pos)
@@ -106,7 +112,27 @@ class Collectible2(Collectible):
     def draw_collec(self):
         pygame.draw.rect(screen, lilac, self.rect)
 
-class Collectible3(Collectible):
+    def adicionar_passagem(self, passagens):
+
+        if self.collected:
+            passagens += 1
+        
+        return passagens
+
+class Tamarindo(Collectible):
+
+    def __init__(self, x_pos, y_pos):
+        super().__init__(x_pos, y_pos)
+        self.gasto = False
+        
+    def draw_collec(self):
+        pygame.draw.rect(screen, black, self.rect)
+
+    def Imunidade(self, vida):
+
+        if self.collected:
+
+class Bola(Collectible):
 
     def __init__(self, x_pos, y_pos):
         super().__init__(x_pos, y_pos)
@@ -115,18 +141,9 @@ class Collectible3(Collectible):
     def draw_collec(self):
         pygame.draw.rect(screen, black, self.rect)
 
-class Collectible3(Collectible):
-
-    def __init__(self, x_pos, y_pos):
-        super().__init__(x_pos, y_pos)
-        
-
-    def draw_collec(self):
-        pygame.draw.rect(screen, black, self.rect)
-
-all_collects_1, y_pos_collec_1 = creating_collectibles(Collectible1)
-all_collects_2, y_pos_collec_2 = creating_collectibles(Collectible2)
-all_collects_3, y_pos_collec_3 = creating_collectibles(Collectible3)
+all_collects_1, y_pos_collec_1 = creating_collectibles(Sanduiche)
+all_collects_2, y_pos_collec_2 = creating_collectibles(Passagem)
+all_collects_3, y_pos_collec_3 = creating_collectibles(Tamarindo)
 
 # creating a clock
 
@@ -197,7 +214,7 @@ while True:
 
     if not all_collects_1 and not y_pos_collec_1: # let's go all over again!
 
-        all_collects_1, y_pos_collec_1 = creating_collectibles(Collectible1)
+        all_collects_1, y_pos_collec_1 = creating_collectibles(Sanduiche)
 
 
     for collectible in all_collects_2:
@@ -222,7 +239,7 @@ while True:
 
     if not all_collects_2 and not y_pos_collec_2: # let's go all over again!
 
-        all_collects_2, y_pos_collec_2 = creating_collectibles(Collectible2)
+        all_collects_2, y_pos_collec_2 = creating_collectibles(Passagem)
 
     for collectible in all_collects_3:
 
@@ -235,6 +252,15 @@ while True:
             collectible.draw_collec()
             collectible.movement()
 
+        else:
+
+            tempo_inicial = pygame.time.get_ticks()
+            while pygame.time.get_ticks() - tempo_inicial < 500:
+
+                for i in lista_bolas:
+
+
+                    
         if not collectible.collected and not collectible.lost:
 
             remaining_collect_3.append(collectible)
@@ -246,6 +272,6 @@ while True:
 
     if not all_collects_3 and not y_pos_collec_3: # let's go all over again!
 
-        all_collects_3, y_pos_collec_3 = creating_collectibles(Collectible3)
+        all_collects_3, y_pos_collec_3 = creating_collectibles(Tamarindo)
 
     pygame.display.flip()
