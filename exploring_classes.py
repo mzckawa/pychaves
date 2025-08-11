@@ -21,51 +21,34 @@ player_y = 2 * height//3
 
 class Collectible:
 
-    def __init__(self, x_pos, y_pos):
+    def __init__(self, x_pos, y_pos, color):
         self.x_pos = x_pos
         self.y_pos = y_pos
         self.width = 50
         self.height = 50
-        self.speed = 10
+        self.color = color
         self.rect = pygame.Rect(self.x_pos, self.y_pos, self.width, self.height)
-        self.collected = False
-        self.lost = False
+        self.collided = False
+        self.out_of_screen = False
 
     def draw_collec(self):
-        pygame.draw.rect(screen, lilac, self.rect)
+        pygame.draw.rect(screen, self.color, self.rect)
 
     def movement(self):
 
-        self.x_pos -= self.speed
+        self.x_pos -= 10
 
         if self.x_pos < -2 * self.width: # in order to make the collectible disappear from the screen, but stop being drawn
-            self.lost = True
+            self.out_of_screen = True
 
         else:
             self.rect = pygame.Rect(self.x_pos, self.y_pos, 50, 50) 
 
-    def get_velocidade(self, velocidade):
-
-        self.speed = velocidade
-
-
-
-
-# naming some RGB tuples
-black = (0, 0, 0)
-white = (255, 255, 255)
-light_green = (128, 200, 128)
-pink = (255, 0, 255)
-lilac = (200, 162, 200)
-
-fifth_height = height // 5
-
- # atstarts at 300
-
-def creating_collectibles(classcollec):
+def creating_collectibles(list_all_collects, i):
     
-    list_all = []
+    list_all = list_all_collects[i]['lista completa']
     list_y = [fifth_height, fifth_height * 2, fifth_height * 3, fifth_height * 4]
+    color = list_all_collects[i]['color']
     
     # defining a random number of appearances for the collectibles
     amount_collect = randint(1, 3)
@@ -79,71 +62,33 @@ def creating_collectibles(classcollec):
         list_y.append(y_collect)
 
         # creating the objects of the class Collectible with the generated random positions
-        collectible = classcollec(x_collect, y_collect)
+        collectible = Collectible(x_collect, y_collect, color)
 
         # adding the newly-created collectible to the list with the other collectibles of the same kind
         list_all.append(collectible)
 
     return list_all, list_y
 
-# creating lists to store the collectibles more easily
+# naming some RGB tuples
+black = (0, 0, 0)
+white = (255, 255, 255)
+blue = (0, 0, 255)
+light_green = (128, 200, 128)
+pink = (255, 0, 255)
+lilac = (200, 162, 200)
 
-class Sanduiche(Collectible):
+fifth_height = height // 5 # the actual screen starts at 300
 
-    def __init__(self, x_pos, y_pos):
-        super().__init__(x_pos, y_pos)
+# creating a nested dictionary in order to store the particular attributes of the different types of objects used during the game
 
-    def draw_collec(self):
-        pygame.draw.rect(screen, white, self.rect)
+list_all_collects = [{'nome': 'sanduiche', 'points': 1, 'color': black, 'lista completa': [], 'lista pos y' :[]}, {'nome': 'passagem', 'points': 1, 'color': white, 'lista completa': [], 'lista pos y' :[]}, {'nome': 'tamarindo', 'points': 0, 'color': blue, 'lista completa': [], 'lista pos y' :[]}, {'nome': 'bola', 'points': -1, 'color': lilac, 'lista completa': [], 'lista pos y' :[]}]
 
-    def adicionar_vida(self, vida):
+# filling the lists created inside the dictionaries 
 
-        if self.collected:
-            vida += 1
-        
-        return vida 
+for i in range(4):
 
-class Passagem(Collectible):
+    list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
 
-    def __init__(self, x_pos, y_pos):
-        super().__init__(x_pos, y_pos)
-        
-
-    def draw_collec(self):
-        pygame.draw.rect(screen, lilac, self.rect)
-
-    def adicionar_passagem(self, passagens):
-
-        if self.collected:
-            passagens += 1
-        
-        return passagens
-
-class Tamarindo(Collectible):
-
-    def __init__(self, x_pos, y_pos):
-        super().__init__(x_pos, y_pos)
-        self.gasto = False
-        
-    def draw_collec(self):
-        pygame.draw.rect(screen, black, self.rect)
-
-    def Imunidade(self, vida):
-
-        if self.collected:
-
-class Bola(Collectible):
-
-    def __init__(self, x_pos, y_pos):
-        super().__init__(x_pos, y_pos)
-        
-
-    def draw_collec(self):
-        pygame.draw.rect(screen, black, self.rect)
-
-all_collects_1, y_pos_collec_1 = creating_collectibles(Sanduiche)
-all_collects_2, y_pos_collec_2 = creating_collectibles(Passagem)
-all_collects_3, y_pos_collec_3 = creating_collectibles(Tamarindo)
 
 # creating a clock
 
@@ -162,116 +107,58 @@ while True:
 
     # controlling the player
 
+    player_x_speed = 10
+    player_y_speed = 10
+
     if pygame.key.get_pressed()[K_w] or pygame.key.get_pressed()[K_UP]:
 
-        player_y -= 10
+        player_y -= player_y_speed
 
     if pygame.key.get_pressed()[K_s] or pygame.key.get_pressed()[K_DOWN]:
 
-        player_y += 10
+        player_y += player_y_speed
 
     if pygame.key.get_pressed()[K_d] or pygame.key.get_pressed()[K_RIGHT]:
 
-        player_x += 10
+        player_x += player_x_speed
 
     if pygame.key.get_pressed()[K_a] or pygame.key.get_pressed()[K_LEFT]:
 
-        player_x -= 10
+        player_x -= player_x_speed
 
     # drawing the player
     player = pygame.draw.rect(screen, pink, (player_x, player_y, 100, 100))
 
     # drawing the collectibles based on which of them were already collected or lost
 
-    remaining_collect_1 = []
-    remaining_y_pos_1 = []
+    for i in range(4):
 
-    remaining_collect_2 = []
-    remaining_y_pos_2 = []
+        if not list_all_collects[i]['lista completa']: # if there aren't any objects of this type available, let's go through their creation process again!
 
-    remaining_collect_3 = []
-    remaining_y_pos_3 = []
+            list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
 
-    for collectible in all_collects_1:
+        remaining_all = []
+        remaining_y_pos = []
 
-        # creating the collision conditional
-        if player.colliderect(collectible):
-            collectible.collected = True
+        for collectible in list_all_collects[i]['lista completa']:
 
-        # keeping on drawing the collectible, if it was not caught by the player
-        if not collectible.collected:
-            collectible.draw_collec()
-            collectible.movement()
+            # creating the collision conditional
+            if player.colliderect(collectible):
 
-        if not collectible.collected and not collectible.lost:
+                collectible.collided = True
+                
+            # keeping on drawing the collectible, if it was not caught by the player or if it's an obstacle
+            if ((i != 3 and not collectible.collided) or i == 3) and not collectible.out_of_screen:
+                
+                collectible.draw_collec()
+                collectible.movement()
+                remaining_all.append(collectible)
+                remaining_y_pos.append(collectible.y_pos)
 
-            remaining_collect_1.append(collectible)
-            remaining_y_pos_1.append(collectible.y_pos)
+        # recreating the list of all collectibles only with the ones actually available
+        
+        list_all_collects[i]['lista completa'] = remaining_all
+        list_all_collects[i]['lista pos y'] = remaining_y_pos
 
-    # recreating the list of all collectibles only with the ones actually available
-    all_collects_1 = remaining_collect_1
-    y_pos_collec_1 = remaining_y_pos_1
-
-    if not all_collects_1 and not y_pos_collec_1: # let's go all over again!
-
-        all_collects_1, y_pos_collec_1 = creating_collectibles(Sanduiche)
-
-
-    for collectible in all_collects_2:
-
-        # creating the collision conditional
-        if player.colliderect(collectible):
-            collectible.collected = True
-
-        # keeping on drawing the collectible, if it was not caught by the player
-        if not collectible.collected:
-            collectible.draw_collec()
-            collectible.movement()
-
-        if not collectible.collected and not collectible.lost:
-
-            remaining_collect_2.append(collectible)
-            remaining_y_pos_2.append(collectible.y_pos)
-
-    # recreating the list of all collectibles only with the ones actually available
-    all_collects_2 = remaining_collect_2
-    y_pos_collec_2 = remaining_y_pos_2
-
-    if not all_collects_2 and not y_pos_collec_2: # let's go all over again!
-
-        all_collects_2, y_pos_collec_2 = creating_collectibles(Passagem)
-
-    for collectible in all_collects_3:
-
-        # creating the collision conditional
-        if player.colliderect(collectible):
-            collectible.collected = True
-
-        # keeping on drawing the collectible, if it was not caught by the player
-        if not collectible.collected:
-            collectible.draw_collec()
-            collectible.movement()
-
-        else:
-
-            tempo_inicial = pygame.time.get_ticks()
-            while pygame.time.get_ticks() - tempo_inicial < 500:
-
-                for i in lista_bolas:
-
-
-                    
-        if not collectible.collected and not collectible.lost:
-
-            remaining_collect_3.append(collectible)
-            remaining_y_pos_3.append(collectible.y_pos)
-
-    # recreating the list of all collectibles only with the ones actually available
-    all_collects_3 = remaining_collect_3
-    y_pos_collec_3 = remaining_y_pos_3
-
-    if not all_collects_3 and not y_pos_collec_3: # let's go all over again!
-
-        all_collects_3, y_pos_collec_3 = creating_collectibles(Tamarindo)
 
     pygame.display.flip()
