@@ -6,7 +6,7 @@ class Jogador:
         self.config_rec = {"x": x, "y": y}
         self.velocidade = 5
         self.velocidade_correnteza = 0
-        imagem = pygame.image.load("imagens_jogo\Chaves.png").convert_alpha()
+        imagem = pygame.image.load("imagens_jogo/Chaves.png").convert_alpha()
         self.imagem = pygame.transform.scale(imagem, (largura, altura))  # Redimensiona para caber no retângulo
         self.barreira_morte = pygame.Rect(-100 , 0, 1, 640)
     
