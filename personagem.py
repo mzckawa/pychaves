@@ -28,7 +28,7 @@ class Jogador:
         for obstaculo in obstaculos:
 
             if self.rect.colliderect(obstaculo):
-
+                    
                 if movimento.x > 0:  # Indo para a direita
                     self.rect.right = obstaculo.left
                 if movimento.x < 0:  # Indo para a esquerda
