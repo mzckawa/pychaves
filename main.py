@@ -76,7 +76,10 @@ def creating_collectibles(list_all_collects, i, comprimento_tela):
 
 # creating a list in order to store the particular attributes of the different types of objects used during the game
 
-list_all_collects = [{'nome': 'sanduiche', 'points': 1, 'imagem': "imagens_jogo/sanduiche.png", 'lista completa': [], 'lista pos y' :[], 'largura': 55, 'altura': 40}, {'nome': 'passagem', 'points': 1, 'imagem': "imagens_jogo/passagem.png", 'lista completa': [], 'lista pos y' :[], 'largura': 45, 'altura': 28}, {'nome': 'tamarindo', 'points': 0, 'imagem': "imagens_jogo/tamarindo.png", 'lista completa': [], 'lista pos y' :[], 'largura': 40, 'altura': 55}, {'nome': 'bola', 'points': -1, 'imagem': "imagens_jogo/bola.png", 'lista completa': [], 'lista pos y' :[], 'largura': 75, 'altura': 75}]
+list_all_collects = [{'nome': 'sanduiche', 'points': 1, 'imagem': "imagens_jogo/sanduiche.png", 'lista completa': [], 'lista pos y' :[], 'largura': 55, 'altura': 40}, 
+                     {'nome': 'passagem', 'points': 1, 'imagem': "imagens_jogo/passagem.png", 'lista completa': [], 'lista pos y' :[], 'largura': 45, 'altura': 28}, 
+                     {'nome': 'tamarindo', 'points': 0, 'imagem': "imagens_jogo/tamarindo.png", 'lista completa': [], 'lista pos y' :[], 'largura': 40, 'altura': 55}, 
+                     {'nome': 'bola', 'points': -1, 'imagem': "imagens_jogo/bola.png", 'lista completa': [], 'lista pos y' :[], 'largura': 75, 'altura': 75}]
 list_probabilities = [0, 0, 0, 0, 1, 2, 3]
 # filling the lists created inside the dictionaries 
 
@@ -165,11 +168,8 @@ tempo = pygame.time.get_ticks()
 run = True
 morte = False
 while run:
-    morte = False
-    velocidade = 3
-    scroll = 0
-    while not morte:
-
+        
+        tela.fill((0,0,0))
         # rodando o menu
         menu_do_jogo.rodar_menu()
 
@@ -179,46 +179,50 @@ while run:
             # verificando se o jogador apertou o botão START
             if menu_do_jogo.selected_index == 0:
 
-                clock.tick(FPS)
-                chaves.get_velocidade_correnteza(velocidade)
-                #cenario infinito
-                for i in range (0, partes):
-                    tela.blit(imagem_cenario, (i * imagem_comprimento + scroll, 0))
-                scroll -= velocidade
+                morte = False
+                velocidade = 3
+                scroll = 0
+                while (not morte) and run:
 
-                teclas = pygame.key.get_pressed()
-                chaves.mover(teclas, obstaculos)
+                    clock.tick(FPS)
+                    chaves.get_velocidade_correnteza(velocidade)
+                    #cenario infinito
+                    for i in range (0, partes):
+                        tela.blit(imagem_cenario, (i * imagem_comprimento + scroll, 0))
+                    scroll -= velocidade
+
+                    teclas = pygame.key.get_pressed()
+                    chaves.mover(teclas, obstaculos)
 
                 if pygame.get_ticks() - tempo >= 5000:
                     tempo = pygame.time.get_ticks()
                     PreenchSeguintes()
 
-                # resetando scroll 
-                if abs(scroll) > imagem_comprimento:
-                    scroll = 0
+                    # resetando scroll 
+                    if abs(scroll) > imagem_comprimento:
+                        scroll = 0
 
-                #receber evento
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
+                    #receber evento
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            run = False
+
+                    if velocidade >= 6:
+                        velocidade = 6
+                    else: 
+                        velocidade += 0.001
+
+                    chaves.get_velocidade_correnteza(velocidade)
+
+                    if chaves.get_colisao_barreira_morte(): #codicao de morte do chaves obs: tem que resetar o coletaveis se derrota por isso
                         morte = True
-                        run = False
+                        menu_do_jogo.running = True
 
-                if velocidade >= 6:
-                    velocidade  = 6
-                else: 
-                    velocidade += 0.001
+                    # fiz esse ELSE para não ocorrer o seguinte bug: o jogador morre ao chegar no limite esquerdo e o Chaves era desenhado mais uma vez na tela
+                    else:
+                        chaves.desenhar(tela)
 
-                chaves.get_velocidade_correnteza(velocidade)
-
-                if chaves.get_colisao_barreira_morte(): #codicao de morte do chaves obs: tem que resetar o coletaveis se derrota por isso
-                    morte = True
-                    tela.fill((0,0,0))
-                    menu_do_jogo.selected_index = 0
-                    menu_do_jogo.running = True
-
-                chaves.desenhar(tela)
-
-                pygame.display.update()
+                    pygame.display.update()
 
             # verificando se o jogador apertou o botão credits
             elif menu_do_jogo.selected_index == 1:
@@ -238,8 +242,6 @@ while run:
 
         # verificando se eu quero fechar a tela do jogo durante o menu
         else:
-
-            morte = True
             
             # mudando o valor da variável que controla o loop
             run = False
