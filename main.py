@@ -52,7 +52,8 @@ chaves.get_velocidade_correnteza(velocidade)
 run = True
 morte = False
 while run:
-
+        
+        tela.fill((0,0,0))
         # rodando o menu
         menu_do_jogo.rodar_menu()
 
@@ -95,7 +96,6 @@ while run:
 
                     if chaves.get_colisao_barreira_morte(): #codicao de morte do chaves obs: tem que resetar o coletaveis se derrota por isso
                         morte = True
-                        tela.fill((0,0,0))
                         menu_do_jogo.running = True
 
                     chaves.desenhar(tela)
