@@ -6,11 +6,14 @@ from creditos import classe_creditos
 # importando o menu
 from menu import classe_menu
 
+# importando os coletáveis e a função de criação
+from classes_e_funcoes_coletaveis import *
+
 pygame.init()
 
 #define tempo do jogo
 clock = pygame.time.Clock()
-FPS = 60
+FPS = 60 # mudar depois
 
 #dimencionamento da tela
 comprimeto_tela = 860
@@ -48,6 +51,18 @@ velocidade = 3
 #velocidade do cenario
 chaves.get_velocidade_correnteza(velocidade)
 
+for i in range(4):
+
+        list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
+        list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
+
+        if i == 3: # adicionando os objetos bola à lista de obstáculos
+
+            for bola in list_all_collects[i]['lista completa']:
+                obstaculos.append(bola.rect)
+
+
+
 #loop do jogo
 run = True
 morte = False
@@ -75,6 +90,8 @@ while run:
 
                 teclas = pygame.key.get_pressed()
                 chaves.mover(teclas, obstaculos)
+
+                PreenchSeguintes(obstaculos)
 
                 # resetando scroll 
                 if abs(scroll) > imagem_comprimento:
