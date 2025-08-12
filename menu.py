@@ -70,12 +70,7 @@ class classe_menu:
         # Desenha o retangulo seletor na tela
         pygame.draw.rect(self.screen, self.color_selected, retangulo_seletor, largura_contorno)
 
-    def pegar_eventos_teclado(self):
-        
-        #README carregando os efeitos sonoros do jogo
-        #TODO verificar se isso gasta muita memória
-        som_selecao_opcoes = pygame.mixer.Sound("efeitos_sonoros/som_selecao_opcoes_menu_8bit.wav")
-        som_start = pygame.mixer.Sound("efeitos_sonoros/som_start_8bit.wav")
+    def pegar_eventos_teclado(self, efeito_sonoro_opcoes, efeito_sonoro_start):
         
         # verificando os eventos do teclado
         for evento in pygame.event.get():
@@ -106,7 +101,7 @@ class classe_menu:
                         # deixei a "len" aí porque, futuramente, talvez eu coloque mais uma opção no menu
                         self.selected_index = len(self.options) - 1
 
-                    som_selecao_opcoes.play()
+                    efeito_sonoro_opcoes.play()
 
                 # verificando se a tecla clicada foi a SETA PARA BAIXO
                 elif evento.key == pygame.K_DOWN:
@@ -120,7 +115,7 @@ class classe_menu:
                         # esse é o indice da opção mais alta
                         self.selected_index = 0
 
-                    som_selecao_opcoes.play()
+                    efeito_sonoro_opcoes.play()
 
                 # verificando se a tecla clicada foi o ENTER
                 elif evento.key == pygame.K_RETURN:
@@ -133,7 +128,7 @@ class classe_menu:
                         # mudando o valor dessa variável para o menu parar de rodar
                         self.running = False
 
-                        som_start.play()
+                        efeito_sonoro_start.play()
 
                     elif self.options[self.selected_index] == "CREDITS":
                         
@@ -144,14 +139,32 @@ class classe_menu:
     
     def rodar_menu(self):
 
+        #README carregando os efeitos sonoros do jogo
+        #TODO verificar se isso gasta muita memória
+        som_selecao_opcoes = pygame.mixer.Sound("efeitos_sonoros/som_selecao_opcoes_menu_8bit.wav")
+        som_selecao_opcoes.set_volume(.1)
+
+        som_start = pygame.mixer.Sound("efeitos_sonoros/som_start_8bit.wav")
+        som_start.set_volume(.3)
+        
+        pygame.mixer.music.load('music/Abertura de Chaves.ogg')
+
+        # tocando a música de fundo. O "-1" significa que, quando a música parar, ela deve tocar novamente se eu ainda estiver na tela do menu
+        pygame.mixer.music.play(-1)
+
         # loop para rodar o menu
         while self.running:
             
             # chamando a função para captar os comandos do teclado do jogador
-            self.pegar_eventos_teclado()
+            self.pegar_eventos_teclado(som_selecao_opcoes, som_start)
 
             # chamando a função para desenhar o que for necessário de acordo com os comandos do teclado do jogador
             self.desenhar()
 
             # função para atualizar a tela do jogo
             pygame.display.flip()
+
+        pygame.mixer.music.stop()
+
+        # descarregando a música do menu para liberar memória
+        pygame.mixer.music.unload()

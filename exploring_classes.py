@@ -21,18 +21,18 @@ player_y = 2 * height//3
 
 class Collectible:
 
-    def __init__(self, x_pos, y_pos, color):
+    def __init__(self, x_pos, y_pos, imagem):
         self.x_pos = x_pos
         self.y_pos = y_pos
         self.width = 50
         self.height = 50
-        self.color = color
         self.rect = pygame.Rect(self.x_pos, self.y_pos, self.width, self.height)
+        self.imagem = pygame.transform.scale(imagem, (self.width, self.height))
         self.collided = False
         self.out_of_screen = False
 
     def draw_collec(self):
-        pygame.draw.rect(screen, self.color, self.rect)
+        screen.blit(self.imagem, (self.x_pos, self.y_pos))
 
     def movement(self):
 
@@ -48,7 +48,7 @@ def creating_collectibles(list_all_collects, i):
     
     list_all = list_all_collects[i]['lista completa']
     list_y = [fifth_height, fifth_height * 2, fifth_height * 3, fifth_height * 4]
-    color = list_all_collects[i]['color']
+    img = list_all_collects[i]['imagem']
     
     # defining a random number of appearances for the collectibles
     amount_collect = randint(1, 3)
@@ -62,7 +62,7 @@ def creating_collectibles(list_all_collects, i):
         list_y.append(y_collect)
 
         # creating the objects of the class Collectible with the generated random positions
-        collectible = Collectible(x_collect, y_collect, color)
+        collectible = Collectible(x_collect, y_collect, img)
 
         # adding the newly-created collectible to the list with the other collectibles of the same kind
         list_all.append(collectible)
@@ -81,14 +81,15 @@ fifth_height = height // 5 # the actual screen starts at 300
 
 # creating a nested dictionary in order to store the particular attributes of the different types of objects used during the game
 
-list_all_collects = [{'nome': 'sanduiche', 'points': 1, 'color': black, 'lista completa': [], 'lista pos y' :[]}, {'nome': 'passagem', 'points': 1, 'color': white, 'lista completa': [], 'lista pos y' :[]}, {'nome': 'tamarindo', 'points': 0, 'color': blue, 'lista completa': [], 'lista pos y' :[]}, {'nome': 'bola', 'points': -1, 'color': lilac, 'lista completa': [], 'lista pos y' :[]}]
+list_all_collects = [{'nome': 'sanduiche', 'points': 1, 'imagem': "imagens_jogo/sandu_pres_previo.png", 'lista completa': [], 'lista pos y' :[]}, {'nome': 'passagem', 'points': 1, 'imagem': "imagens_jogo/passagem_previa.png", 'lista completa': [], 'lista pos y' :[]}, {'nome': 'tamarindo', 'points': 0, 'imagem': "imagens_jogo/tamarindo_previo.webp", 'lista completa': [], 'lista pos y' :[]}, {'nome': 'bola', 'points': -1, 'imagem': "imagens_jogo/bola_previa.jpg", 'lista completa': [], 'lista pos y' :[]}]
 
 # filling the lists created inside the dictionaries 
 
 for i in range(4):
 
+    list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
     list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
-
+    
 
 # creating a clock
 
@@ -96,7 +97,7 @@ clock = pygame.time.Clock()
 
 while True:
 
-    clock.tick(30)
+    clock.tick(60)
 
     screen.fill(light_green)
 
@@ -143,7 +144,7 @@ while True:
         for collectible in list_all_collects[i]['lista completa']:
 
             # creating the collision conditional
-            if player.colliderect(collectible):
+            if player.colliderect(collectible.rect):
 
                 collectible.collided = True
                 
@@ -155,6 +156,10 @@ while True:
                 remaining_all.append(collectible)
                 remaining_y_pos.append(collectible.y_pos)
 
+        # recreating the list of all collectibles only with the ones actually available
+        
+        list_all_collects[i]['lista completa'] = remaining_all
+        list_all_collects[i]['lista pos y'] = remaining_y_pos
         # recreating the list of all collectibles only with the ones actually available
         
         list_all_collects[i]['lista completa'] = remaining_all
