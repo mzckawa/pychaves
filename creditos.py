@@ -47,7 +47,7 @@ class classe_creditos:
         # desenha retangulo seletor na tela
         pygame.draw.rect(self.screen, (255, 0, 0), retangulo_seletor_creditos, largura_contorno_ret_cred)
 
-    def pegar_eventos_teclado_creditos(self):
+    def pegar_eventos_teclado_creditos(self, som_enter_exit):
 
         # verificando os eventos que o jogador vai mandar para mim
         for event in pygame.event.get():
@@ -67,13 +67,29 @@ class classe_creditos:
                                         
                     self.running = False
 
+                    som_enter_exit.play()
+
     def rodar_tela_creditos(self):
+
+        # carregando o efeito sonoro
+        som_enter = pygame.mixer.Sound("efeitos_sonoros/som_selecao_opcoes_menu_8bit.wav")
+
+        som_enter.set_volume(.1)
+
+        pygame.mixer.music.load("music/Elefante Branco 2.ogg")
+
+        # tocando a música de fundo. O "-1" significa que, quando a música parar, ela deve tocar novamente se eu ainda estiver na tela dos créditos
+        pygame.mixer.music.play(-1)
 
         while self.running:
 
-            self.pegar_eventos_teclado_creditos()
+            self.pegar_eventos_teclado_creditos(som_enter)
 
             self.desenhar_tela_creditos()
 
             # comando que atualiza a tela com tudo o que foi desenhado
             pygame.display.flip()
+
+        pygame.mixer.music.stop()
+
+        pygame.mixer.music.unload()
