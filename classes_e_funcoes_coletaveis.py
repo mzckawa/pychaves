@@ -5,9 +5,9 @@ import random
 from random import randint
 from personagem import Jogador
 
-width = 860
-height = 640
-screen = pygame.display.set_mode((width, height))
+width = int
+height = int
+screen = ''
 
 chaves = Jogador(400, 400, 100, 100)
 
@@ -34,7 +34,7 @@ class Collectible:
             self.out_of_screen = True
 
         else:
-            self.rect = pygame.Rect(self.x_pos, self.y_pos, 50, 50) 
+            self.rect = pygame.Rect(self.x_pos, self.y_pos, self.width, self.height) 
 
 def creating_collectibles(list_all_collects, i):
     
@@ -96,16 +96,12 @@ def PreenchSeguintes(obstaculos):
                 collectible.collided = True
                 
             # keeping on drawing the collectible, if it was not caught by the player or if it's an obstacle
-            if ((i != 3 and not collectible.collided) or i == 3) and not collectible.out_of_screen:
+            if not collectible.collided and not collectible.out_of_screen:
                 
                 collectible.draw_collec()
                 collectible.movement()
                 remaining_all.append(collectible)
                 remaining_y_pos.append(collectible.y_pos)
-
-            if i == 3: # adicionando os objetos bola à lista de obstáculos
-            
-                obstaculos.append(collectible.rect)
 
         # recreating the list of all collectibles only with the ones actually available
         
