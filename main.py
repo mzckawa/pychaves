@@ -13,6 +13,14 @@ from menu import classe_menu
 
 pygame.init()
 
+#dimensionamento da tela
+comprimento_tela = 860
+largura_tela = 640
+
+#criando a tela
+tela = pygame.display.set_mode((comprimento_tela, largura_tela))
+pygame.display.set_caption("pychaves")
+
 class Collectible:
 
     def __init__(self, x_pos, y_pos, imagem, largura, altura):
@@ -25,7 +33,7 @@ class Collectible:
         self.collided = False
         self.out_of_screen = False
 
-    def draw_collec(self):
+    def draw_collec(self, tela):
         tela.blit(self.imagem, (self.x_pos, self.y_pos))
 
     def movement(self):
@@ -38,10 +46,10 @@ class Collectible:
         else:
             self.rect = pygame.Rect(self.x_pos, self.y_pos, 50, 50) 
 
-def creating_collectibles(list_all_collects, i):
-    
+def creating_collectibles(list_all_collects, i, comprimento_tela):
+
     list_all = list_all_collects[i]['lista completa']
-    list_y = [380, 450, 520, 590]
+    list_y = [358, 470, 582]
     available_y = list_y[::]
     img = list_all_collects[i]['imagem']
     larg = list_all_collects[i]['altura']
@@ -77,15 +85,15 @@ def PrimeiroPreenchimento():
     for i in range(4):
 
         list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
-        list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
+        list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i, comprimento_tela)
     
-def PreenchSeguintes(obstaculos):
+def PreenchSeguintes():
 
     for i in range(4):
 
         if not list_all_collects[i]['lista completa']: # if there aren't any objects of this type available, let's go through their creation process again!
 
-            list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
+            list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i, comprimento_tela)
 
         remaining_all = []
         remaining_y_pos = []
@@ -100,7 +108,7 @@ def PreenchSeguintes(obstaculos):
             # keeping on drawing the collectible, if it was not caught by the player or if it's an obstacle
             if not collectible.collided and not collectible.out_of_screen:
                 
-                collectible.draw_collec()
+                collectible.draw_collec(tela)
                 collectible.movement()
                 remaining_all.append(collectible)
                 remaining_y_pos.append(collectible.y_pos)
@@ -117,14 +125,6 @@ def PreenchSeguintes(obstaculos):
 #define tempo do jogo
 clock = pygame.time.Clock()
 FPS = 60 # mudar depois
-
-#dimencionamento da tela
-comprimento_tela = 860
-largura_tela = 640
-
-#criando a tela
-tela = pygame.display.set_mode((comprimento_tela, largura_tela))
-pygame.display.set_caption("pychaves")
 
 #receber a imagem dos arquivos
 imagem_cenario = pygame.image.load("imagens_jogo/cenario_jogo.jpg").convert()
@@ -157,12 +157,9 @@ chaves.get_velocidade_correnteza(velocidade)
 for i in range(4):
 
         list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
-        list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
+        list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i, comprimento_tela)
 
-        if i == 3: # adicionando os objetos bola à lista de obstáculos
-
-            for bola in list_all_collects[i]['lista completa']:
-                obstaculos.append(bola.rect)
+tempo = pygame.time.get_ticks()
 
 #loop do jogo
 run = True
@@ -192,7 +189,9 @@ while run:
                 teclas = pygame.key.get_pressed()
                 chaves.mover(teclas, obstaculos)
 
-                PreenchSeguintes(obstaculos)
+                if pygame.get_ticks() - tempo >= 5000:
+                    tempo = pygame.time.get_ticks()
+                    PreenchSeguintes()
 
                 # resetando scroll 
                 if abs(scroll) > imagem_comprimento:

@@ -77,7 +77,8 @@ def PrimeiroPreenchimento():
         list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
         list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
     
-def PreenchSeguintes(obstaculos):
+def PreenchSeguintes():
+
 
     for i in range(4):
 
