@@ -1,4 +1,5 @@
 import pygame
+from classes_e_funcoes_coletaveis import Collectible 
 
 class Jogador:
     def __init__(self, x , y, largura, altura):
@@ -26,10 +27,17 @@ class Jogador:
         self.rect.x += movimento.x
         for obstaculo in obstaculos:
             if self.rect.colliderect(obstaculo):
-                if movimento.x > 0:  # Indo para a direita
-                    self.rect.right = obstaculo.left
-                if movimento.x < 0:  # Indo para a esquerda
-                    self.rect.left = obstaculo.right
+
+                if isinstance(obstaculo) == Collectible:
+
+                    movimento.x = 0
+
+                else:
+
+                    if movimento.x > 0:  # Indo para a direita
+                        self.rect.right = obstaculo.left
+                    if movimento.x < 0:  # Indo para a esquerda
+                        self.rect.left = obstaculo.right
 
         # Agora move no eixo Y e checa colisões
         self.rect.y += movimento.y
