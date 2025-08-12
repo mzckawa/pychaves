@@ -142,16 +142,6 @@ while True:
         remaining_y_pos = []
 
         for collectible in list_all_collects[i]['lista completa']:
-    for i in range(4):
-
-        if not list_all_collects[i]['lista completa']: # if there aren't any objects of this type available, let's go through their creation process again!
-
-            list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
-
-        remaining_all = []
-        remaining_y_pos = []
-
-        for collectible in list_all_collects[i]['lista completa']:
 
             # creating the collision conditional
             if player.colliderect(collectible.rect):
