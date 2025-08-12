@@ -21,11 +21,11 @@ player_y = 2 * height//3
 
 class Collectible:
 
-    def __init__(self, x_pos, y_pos, imagem):
+    def __init__(self, x_pos, y_pos, imagem, width, height):
         self.x_pos = x_pos
         self.y_pos = y_pos
-        self.width = 50
-        self.height = 50
+        self.width = width
+        self.height = height
         self.rect = pygame.Rect(self.x_pos, self.y_pos, self.width, self.height)
         self.imagem = pygame.transform.scale(imagem, (self.width, self.height))
         self.collided = False
@@ -49,6 +49,8 @@ def creating_collectibles(list_all_collects, i):
     list_all = list_all_collects[i]['lista completa']
     list_y = [fifth_height, fifth_height * 2, fifth_height * 3, fifth_height * 4]
     img = list_all_collects[i]['imagem']
+    wid = list_all_collects[i]['width']
+    hei = list_all_collects[i]['height']
     
     # defining a random number of appearances for the collectibles
     amount_collect = randint(1, 3)
@@ -62,7 +64,7 @@ def creating_collectibles(list_all_collects, i):
         list_y.append(y_collect)
 
         # creating the objects of the class Collectible with the generated random positions
-        collectible = Collectible(x_collect, y_collect, img)
+        collectible = Collectible(x_collect, y_collect, img, wid, hei)
 
         # adding the newly-created collectible to the list with the other collectibles of the same kind
         list_all.append(collectible)
@@ -79,9 +81,9 @@ lilac = (200, 162, 200)
 
 fifth_height = height // 5 # the actual screen starts at 300
 
-# creating a nested dictionary in order to store the particular attributes of the different types of objects used during the game
+# creating a list in order to store the particular attributes of the different types of objects used during the game
 
-list_all_collects = [{'nome': 'sanduiche', 'points': 1, 'imagem': "imagens_jogo/sandu_pres_previo.png", 'lista completa': [], 'lista pos y' :[]}, {'nome': 'passagem', 'points': 1, 'imagem': "imagens_jogo/passagem_previa.png", 'lista completa': [], 'lista pos y' :[]}, {'nome': 'tamarindo', 'points': 0, 'imagem': "imagens_jogo/tamarindo_previo.webp", 'lista completa': [], 'lista pos y' :[]}, {'nome': 'bola', 'points': -1, 'imagem': "imagens_jogo/bola_previa.jpg", 'lista completa': [], 'lista pos y' :[]}]
+list_all_collects = [{'nome': 'sanduiche', 'points': 1, 'imagem': "imagens_jogo/sanduiche.png", 'lista completa': [], 'lista pos y' :[], 'width': 70, 'height': 50}, {'nome': 'passagem', 'points': 1, 'imagem': "imagens_jogo/passagem.png", 'lista completa': [], 'lista pos y' :[], 'width': 70, 'height': 50}, {'nome': 'tamarindo', 'points': 0, 'imagem': "imagens_jogo/tamarindo.png", 'lista completa': [], 'lista pos y' :[], 'width': 30, 'height': 50}, {'nome': 'bola', 'points': -1, 'imagem': "imagens_jogo/bola.png", 'lista completa': [], 'lista pos y' :[], 'width': 50, 'height': 50}]
 
 # filling the lists created inside the dictionaries 
 
@@ -97,7 +99,7 @@ clock = pygame.time.Clock()
 
 while True:
 
-    clock.tick(60)
+    clock.tick(20)
 
     screen.fill(light_green)
 
