@@ -135,7 +135,7 @@ class classe_menu:
                         # mudando o valor dessa variável para o menu parar de rodar
                         self.running = False
 
-                        som_selecao_opcoes.play()
+                        efeito_sonoro_opcoes.play()
     
     def rodar_menu(self):
 
