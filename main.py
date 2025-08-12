@@ -98,7 +98,9 @@ while run:
                         morte = True
                         menu_do_jogo.running = True
 
-                    chaves.desenhar(tela)
+                    # fiz esse ELSE para não ocorrer o seguinte bug: o jogador morre ao chegar no limite esquerdo e o Chaves era desenhado mais uma vez na tela
+                    else:
+                        chaves.desenhar(tela)
 
                     pygame.display.update()
 
