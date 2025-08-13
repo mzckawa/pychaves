@@ -38,84 +38,68 @@ class Collectible:
         else:
             self.rect = pygame.Rect(self.x_pos, self.y_pos, 50, 50) 
 
-def creating_collectibles(list_all_collects, i):
+
+
+
+
+
+
+
+
+def creating_collectibles(lista_pos):
     
-    list_all = list_all_collects[i]['lista completa']
-    list_y = [380, 450, 520, 590]
-    available_y = list_y[::]
-    img = list_all_collects[i]['imagem']
-    larg = list_all_collects[i]['altura']
-    alt = list_all_collects[i]['altura']
+    lista_aux = []
+    lista_aux_colec = []
     
-    # defining a random number of appearances for the collectibles
-    amount_collect = randint(1, 2)
-
-    while len(list_all) < amount_collect:
-
-        x_collect = comprimento_tela # we want the collectibles to always go from the right side to the left side
-        y_collect = random.choice(available_y) # generating a random y-axis position for the collectible
-
-        # adding the random-yet-adequate y-axis position to the list of positions
-        available_y.remove(y_collect)
-
-        # creating the objects of the class Collectible with the generated random positions
-        collectible = Collectible(x_collect, y_collect, img, larg, alt)
-
-        # adding the newly-created collectible to the list with the other collectibles of the same kind
-        list_all.append(collectible)
-
-    return list_all, list_y
-
-# creating a list in order to store the particular attributes of the different types of objects used during the game
-
-list_all_collects = [{'nome': 'sanduiche', 'points': 1, 'imagem': "imagens_jogo/sanduiche.png", 'lista completa': [], 'lista pos y' :[], 'largura': 55, 'altura': 40}, 
-                     {'nome': 'passagem', 'points': 1, 'imagem': "imagens_jogo/passagem.png", 'lista completa': [], 'lista pos y' :[], 'largura': 45, 'altura': 28}, 
-                     {'nome': 'tamarindo', 'points': 0, 'imagem': "imagens_jogo/tamarindo.png", 'lista completa': [], 'lista pos y' :[], 'largura': 40, 'altura': 55}, 
-                     {'nome': 'bola', 'points': -1, 'imagem': "imagens_jogo/bola.png", 'lista completa': [], 'lista pos y' :[], 'largura': 75, 'altura': 75}]
-list_probabilities = [0, 0, 0, 0, 1, 2, 3]
-# filling the lists created inside the dictionaries 
-
-def PrimeiroPreenchimento():
-
-    for i in range(4):
-
-        list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
-        list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
+    n_obstaculos = random.choices([1, 2], weights = [0.7, 0.3])
     
-def PreenchSeguintes(obstaculos):
-
-    for i in range(4):
-
-        if not list_all_collects[i]['lista completa']: # if there aren't any objects of this type available, let's go through their creation process again!
-
-            list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
-
-        remaining_all = []
-        remaining_y_pos = []
-
-        for collectible in list_all_collects[i]['lista completa']:
-
-            # creating the collision conditional
-            if chaves.rect.colliderect(collectible.rect):
-
-                collectible.collided = True
-                
-            # keeping on drawing the collectible, if it was not caught by the player or if it's an obstacle
-            if not collectible.collided and not collectible.out_of_screen:
-                
-                collectible.draw_collec()
-                collectible.movement()
-                remaining_all.append(collectible)
-                remaining_y_pos.append(collectible.y_pos)
-
-        # recreating the list of all collectibles only with the ones actually available
+    # FOR para gerar as posições dos obstáculos
+    for i in range(n_obstaculos):
         
-        list_all_collects[i]['lista completa'] = remaining_all
-        list_all_collects[i]['lista pos y'] = remaining_y_pos
-        # recreating the list of all collectibles only with the ones actually available
+        y = random.choice(lista_pos)
         
-        list_all_collects[i]['lista completa'] = remaining_all
-        list_all_collects[i]['lista pos y'] = remaining_y_pos
+        lista_aux.append(y)
+        
+        #README cuidado para não alterar a lista de fora
+        lista_pos.remove(y)
+    
+    status_colec = random.choices([True, False], weights = [0.3, 0.7]) 
+    
+    if status_colec:
+        y = random.choice(lista_pos)
+
+        tipo = random.choices(["saduiche","suco","passagem"], weights = [0.4, 0.3, 0.2])
+
+        lista_aux_colec.append(y)
+
+        lista_pos.remove(y)
+
+        resultado = f'obstáculos: {lista_aux}\n coletável: tipo {tipo} e posição {lista_aux_colec} \n restante {lista_pos}'
+    
+    else:
+        
+        resultado = f'obstáculos: {lista_aux}\n não tem coletável \n restante {lista_pos}'
+    
+    return resultado
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #define tempo do jogo
 clock = pygame.time.Clock()
@@ -157,15 +141,30 @@ velocidade = 3
 #velocidade do cenario
 chaves.get_velocidade_correnteza(velocidade)
 
+
+
+
+
+
+
+
+
 for i in range(4):
 
-        list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
-        list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i)
+    list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
 
-        if i == 3: # adicionando os objetos bola à lista de obstáculos
+    if i == 3: # adicionando os objetos bola à lista de obstáculos
 
-            for bola in list_all_collects[i]['lista completa']:
-                obstaculos.append(bola.rect)
+        for bola in list_all_collects[i]['lista completa']:
+            obstaculos.append(bola.rect)
+
+
+
+
+
+
+
+# APAGAR
 
 #loop do jogo
 run = True
@@ -197,7 +196,8 @@ while run:
                     teclas = pygame.key.get_pressed()
                     chaves.mover(teclas, obstaculos)
 
-                    PreenchSeguintes(obstaculos)
+                    PreenchSeguintes()# APAGAR
+                    
 
                     # resetando scroll 
                     if abs(scroll) > imagem_comprimento:

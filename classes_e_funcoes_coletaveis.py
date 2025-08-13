@@ -48,7 +48,7 @@ def creating_collectibles(list_all_collects, i):
     # defining a random number of appearances for the collectibles
     amount_collect = randint(1, 2)
 
-    while len(list_all) < amount_collect:
+    for i in range(amount_collect):
 
         x_collect = width # we want the collectibles to always go from the right side to the left side
         y_collect = random.choice(available_y) # generating a random y-axis position for the collectible

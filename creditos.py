@@ -26,26 +26,8 @@ class classe_creditos:
         # carregando a imagem dos creditos
         tela_de_creditos = pygame.image.load("imagens_jogo/imagem_creditos.png")
 
-        # redimensionando a tela de créditos
-        tela_de_creditos = pygame.transform.scale(tela_de_creditos, (640, 640))
-
         # desenhando a imagem na tela do pygame
-        self.screen.blit(tela_de_creditos, (110, 0))
-
-        # definindo as coordenadas do retangulo seletor
-        x_ret_cred, y_ret_cred = 130, 540
-
-        # definindo o tamanho do retangulo seletor
-        largura_ret_cred, altura_ret_cred = 150, 65
-
-        # definindo a grossura do contorno do retangulo
-        largura_contorno_ret_cred = 7
-        
-        # criando o retangulo seletor
-        retangulo_seletor_creditos = pygame.Rect(x_ret_cred, y_ret_cred, largura_ret_cred, altura_ret_cred)
-
-        # desenha retangulo seletor na tela
-        pygame.draw.rect(self.screen, (255, 0, 0), retangulo_seletor_creditos, largura_contorno_ret_cred)
+        self.screen.blit(tela_de_creditos, (0, 0))
 
     def pegar_eventos_teclado_creditos(self, som_enter_exit):
 
