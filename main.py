@@ -133,6 +133,13 @@ img_go = pygame.transform.scale(img_go, (384, 256))
 imagem_sanduiches_vida = pygame.image.load("imagens_jogo/sanduiche_vida.png")
 imagem_passagens = pygame.image.load("imagens_jogo/passagem.png")
 
+chaves_img_normal = pygame.image.load("imagens_jogo/Chaves.png").convert_alpha()
+chaves_img_dano = pygame.image.load("imagens_jogo/Chaves_vermelho.png").convert_alpha()
+
+# Ajuste para o tamanho do personagem
+chaves_img_normal = pygame.transform.scale(chaves_img_normal, (100, 100))
+chaves_img_dano = pygame.transform.scale(chaves_img_dano, (100, 100))
+
 #define tempo do jogo
 clock = pygame.time.Clock()
 FPS = 60 
@@ -155,6 +162,8 @@ partes = math.ceil(comprimento_tela/imagem_comprimento) + 2
 print(partes)
 
 chaves = Jogador(400, 400, 100, 100)
+chaves.imagem = chaves_img_normal
+
 obstaculos = [
     pygame.Rect(0 , 300, 860, 10),
     pygame.Rect(860 , 0, 1, 640),
@@ -172,6 +181,8 @@ run = True
 morte = False
 
 tempo_tamarindo = - 4000
+
+tempo_dano = 0
 
 while run:
         
@@ -258,6 +269,8 @@ while run:
                                 if pygame.time.get_ticks() - tempo_tamarindo > 4000: # fazendo a animação de dano, caso Chaves não possua tamarindos para protegê-lo
                                     
                                     vida -= 1 
+                                    chaves.imagem = chaves_img_dano
+                                    tempo_dano = pygame.time.get_ticks()
 
                                     if vida == 0:
                                         morte = True
@@ -297,6 +310,11 @@ while run:
 
                     # fiz esse ELSE para não ocorrer o seguinte bug: o jogador morre ao chegar no limite esquerdo e o Chaves era desenhado mais uma vez na tela
                     else:
+
+                        if tempo_dano != 0 and pygame.time.get_ticks() - tempo_dano > 200:
+                            chaves.imagem = chaves_img_normal
+                            tempo_dano = 0
+
                         chaves.desenhar(tela)
 
                     pygame.display.update()
