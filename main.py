@@ -46,33 +46,44 @@ class Collectible:
         else:
             self.rect = pygame.Rect(self.x_pos, self.y_pos, 50, 50) 
 
-def creating_collectibles(list_all_collects, i, comprimento_tela):
+posicoes_y = [358, 470, 582]
 
-    list_all = list_all_collects[i]['lista completa']
-    list_y = [358, 470, 582]
-    available_y = list_y[::]
-    img = list_all_collects[i]['imagem']
-    larg = list_all_collects[i]['altura']
-    alt = list_all_collects[i]['altura']
-    
-    # defining a random number of appearances for the collectibles
-    amount_collect = randint(1, 2)
+intervalo_ondas = 750
+itens_ativos = []
 
-    while len(list_all) < amount_collect:
+def criar_onda(list_all_collects):
+    global itens_ativos
 
-        x_collect = comprimento_tela # we want the collectibles to always go from the right side to the left side
-        y_collect = random.choice(available_y) # generating a random y-axis position for the collectible
+    posicoes_disponiveis = posicoes_y.copy()
 
-        # adding the random-yet-adequate y-axis position to the list of positions
-        available_y.remove(y_collect)
+    # --- 1) Obstáculos obrigatórios ---
+    qtd_obstaculos = random.randint(1, 2)  # pode ter 1 ou 2
+    pos_obstaculos = random.sample(posicoes_disponiveis, qtd_obstaculos)
 
-        # creating the objects of the class Collectible with the generated random positions
-        collectible = Collectible(x_collect, y_collect, img, larg, alt)
+    for y in pos_obstaculos:
+        obst_info = next(item for item in list_all_collects if item['nome'] == 'bola')  
+        novo_obst = Collectible(
+            x_pos=comprimento_tela,
+            y_pos=y,
+            imagem=obst_info['imagem'],
+            largura=obst_info['largura'],
+            altura=obst_info['altura']
+        )
+        itens_ativos.append(novo_obst)
+        posicoes_disponiveis.remove(y)
 
-        # adding the newly-created collectible to the list with the other collectibles of the same kind
-        list_all.append(collectible)
-
-    return list_all, list_y
+    # --- 2) Coletáveis opcionais ---
+    for y in posicoes_disponiveis:
+        if random.random() < 0.1:  # 60% de chance de aparecer algo
+            colet_info = random.choices([item for item in list_all_collects if item['nome'] != 'bola'], weights=[0.6, 0.2, 0.2])[0] # escolhe aleatoriamente entre os outros tipos de coletáveis
+            novo_colet = Collectible(
+                x_pos=comprimento_tela,
+                y_pos=y,
+                imagem=colet_info['imagem'],
+                largura=colet_info['largura'],
+                altura=colet_info['altura']
+            )
+            itens_ativos.append(novo_colet)
 
 # creating a list in order to store the particular attributes of the different types of objects used during the game
 
@@ -80,51 +91,10 @@ list_all_collects = [{'nome': 'sanduiche', 'points': 1, 'imagem': "imagens_jogo/
                      {'nome': 'passagem', 'points': 1, 'imagem': "imagens_jogo/passagem.png", 'lista completa': [], 'lista pos y' :[], 'largura': 45, 'altura': 28}, 
                      {'nome': 'tamarindo', 'points': 0, 'imagem': "imagens_jogo/tamarindo.png", 'lista completa': [], 'lista pos y' :[], 'largura': 40, 'altura': 55}, 
                      {'nome': 'bola', 'points': -1, 'imagem': "imagens_jogo/bola.png", 'lista completa': [], 'lista pos y' :[], 'largura': 75, 'altura': 75}]
-list_probabilities = [0, 0, 0, 0, 1, 2, 3]
-# filling the lists created inside the dictionaries 
 
-def PrimeiroPreenchimento():
+for i in range(4):
 
-    for i in range(4):
-
-        list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
-        list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i, comprimento_tela)
-    
-def PreenchSeguintes():
-
-    for i in range(4):
-
-        if not list_all_collects[i]['lista completa']: # if there aren't any objects of this type available, let's go through their creation process again!
-
-            list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i, comprimento_tela)
-
-        remaining_all = []
-        remaining_y_pos = []
-
-        for collectible in list_all_collects[i]['lista completa']:
-
-            # creating the collision conditional
-            if chaves.rect.colliderect(collectible.rect):
-
-                collectible.collided = True
-                
-            # keeping on drawing the collectible, if it was not caught by the player or if it's an obstacle
-            if not collectible.collided and not collectible.out_of_screen:
-                
-                collectible.draw_collec(tela)
-                collectible.movement()
-                remaining_all.append(collectible)
-                remaining_y_pos.append(collectible.y_pos)
-
-        # recreating the list of all collectibles only with the ones actually available
-        
-        list_all_collects[i]['lista completa'] = remaining_all
-        list_all_collects[i]['lista pos y'] = remaining_y_pos
-        # recreating the list of all collectibles only with the ones actually available
-        
-        list_all_collects[i]['lista completa'] = remaining_all
-        list_all_collects[i]['lista pos y'] = remaining_y_pos
-
+    list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
 #define tempo do jogo
 clock = pygame.time.Clock()
 FPS = 60 # mudar depois
@@ -157,11 +127,6 @@ velocidade = 3
 #velocidade do cenario
 chaves.get_velocidade_correnteza(velocidade)
 
-for i in range(4):
-
-        list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
-        list_all_collects[i]['lista completa'], list_all_collects[i]['lista pos y'] = creating_collectibles(list_all_collects, i, comprimento_tela)
-
 tempo = pygame.time.get_ticks()
 
 #loop do jogo
@@ -182,6 +147,7 @@ while run:
                 morte = False
                 velocidade = 3
                 scroll = 0
+                tempo_ultima_onda = pygame.time.get_ticks() + 1500
                 while (not morte) and run:
 
                     clock.tick(FPS)
@@ -194,10 +160,18 @@ while run:
                     teclas = pygame.key.get_pressed()
                     chaves.mover(teclas, obstaculos)
 
-                if pygame.get_ticks() - tempo >= 5000:
-                    tempo = pygame.time.get_ticks()
-                    PreenchSeguintes()
+                    if pygame.time.get_ticks() - tempo >= 5000:
+                        tempo = pygame.time.get_ticks()
 
+                    tempo_atual = pygame.time.get_ticks()
+                    if tempo_atual - tempo_ultima_onda >= intervalo_ondas:
+                        criar_onda(list_all_collects)
+                        tempo_ultima_onda = tempo_atual
+
+                    for item in itens_ativos[:]:
+                        item.movement()
+                        item.draw_collec(tela)
+                    
                     # resetando scroll 
                     if abs(scroll) > imagem_comprimento:
                         scroll = 0
