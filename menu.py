@@ -52,23 +52,29 @@ class classe_menu:
         # Define a posição e dimensões do retângulo
         if self.selected_index == 0:
 
-            y_retangulo = 495
+            y_retangulo = 502
 
         elif self.selected_index == 1:
 
-            y_retangulo = 545
+            y_retangulo = 551
 
-        x_retangulo = 320 # para passar para a opção de baixo, eu vou aumentar 55 na coordenada do retângulo
-        largura_ret, altura_ret = 195, 60
+        x_retangulo = 310 # para passar para a opção de baixo, eu vou aumentar 55 na coordenada do retângulo
+        largura_ret, altura_ret = 210, 50
 
         # Define a largura do contorno (10 pixels)
-        largura_contorno = 7
+        #largura_contorno = 7
+
+        setas_seletoras = pygame.image.load('imagens_jogo/setas_seletoras.png')
+
+        setas_seletoras = pygame.transform.scale(setas_seletoras, (largura_ret, altura_ret))
+
+        self.screen.blit(setas_seletoras, (x_retangulo, y_retangulo))
 
         # Cria o retângulo seletor
-        retangulo_seletor = pygame.Rect(x_retangulo, y_retangulo, largura_ret, altura_ret)
+        #retangulo_seletor = pygame.Rect(x_retangulo, y_retangulo, largura_ret, altura_ret)
 
         # Desenha o retangulo seletor na tela
-        pygame.draw.rect(self.screen, self.color_selected, retangulo_seletor, largura_contorno)
+        #pygame.draw.rect(self.screen, self.color_selected, retangulo_seletor, largura_contorno)
 
     def pegar_eventos_teclado(self, efeito_sonoro_opcoes, efeito_sonoro_start):
         
