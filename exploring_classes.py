@@ -7,7 +7,6 @@ from sys import exit
 import random
 from random import randint
 
-
 # defining my screen's measures
 width = 860
 height = 640

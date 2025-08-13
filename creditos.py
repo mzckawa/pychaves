@@ -18,34 +18,16 @@ class classe_creditos:
         # salvando a cor VERMELHO para pintar o retângulo seletor da opção "EXIT"
         self.color_selected = (255, 0, 0)
 
-    def desenhar_tela_creditos(self):
+    def desenhar_tela_creditos(self, tela_de_creditos):
 
         # pintando a tela de preto - tô tentando "limpar a tela"
         self.screen.fill((0, 0, 0))
 
-        # carregando a imagem dos creditos
-        tela_de_creditos = pygame.image.load("imagens_jogo/imagem_creditos.png")
-
         # redimensionando a tela de créditos
-        tela_de_creditos = pygame.transform.scale(tela_de_creditos, (640, 640))
+        tela_de_creditos = pygame.transform.scale(tela_de_creditos, (860, 640))
 
         # desenhando a imagem na tela do pygame
-        self.screen.blit(tela_de_creditos, (110, 0))
-
-        # definindo as coordenadas do retangulo seletor
-        x_ret_cred, y_ret_cred = 130, 540
-
-        # definindo o tamanho do retangulo seletor
-        largura_ret_cred, altura_ret_cred = 150, 65
-
-        # definindo a grossura do contorno do retangulo
-        largura_contorno_ret_cred = 7
-        
-        # criando o retangulo seletor
-        retangulo_seletor_creditos = pygame.Rect(x_ret_cred, y_ret_cred, largura_ret_cred, altura_ret_cred)
-
-        # desenha retangulo seletor na tela
-        pygame.draw.rect(self.screen, (255, 0, 0), retangulo_seletor_creditos, largura_contorno_ret_cred)
+        self.screen.blit(tela_de_creditos, (0, 0))
 
     def pegar_eventos_teclado_creditos(self, som_enter_exit):
 
@@ -81,11 +63,14 @@ class classe_creditos:
         # tocando a música de fundo. O "-1" significa que, quando a música parar, ela deve tocar novamente se eu ainda estiver na tela dos créditos
         pygame.mixer.music.play(-1)
 
+        # carregando a imagem dos creditos
+        imagem_tela_creditos = pygame.image.load("imagens_jogo/imagem_creditos.png")
+
         while self.running:
 
             self.pegar_eventos_teclado_creditos(som_enter)
 
-            self.desenhar_tela_creditos()
+            self.desenhar_tela_creditos(imagem_tela_creditos)
 
             # comando que atualiza a tela com tudo o que foi desenhado
             pygame.display.flip()

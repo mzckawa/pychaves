@@ -1,6 +1,5 @@
 import pygame
 
-
 class Jogador:
     def __init__(self, x , y, largura, altura):
         self.rect = pygame.Rect(x, y, largura, altura)
@@ -10,6 +9,7 @@ class Jogador:
         imagem = pygame.image.load("imagens_jogo/Chaves.png").convert_alpha()
         self.imagem = pygame.transform.scale(imagem, (largura, altura))  # Redimensiona para caber no retângulo
         self.barreira_morte = pygame.Rect(-100 , 0, 1, 640)
+        self.tamarindo = False
     
     def mover(self, teclas, obstaculos):
         movimento = pygame.Vector2(0, 0)
@@ -28,7 +28,7 @@ class Jogador:
         for obstaculo in obstaculos:
 
             if self.rect.colliderect(obstaculo):
-                    
+
                 if movimento.x > 0:  # Indo para a direita
                     self.rect.right = obstaculo.left
                 if movimento.x < 0:  # Indo para a esquerda
