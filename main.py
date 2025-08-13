@@ -149,21 +149,6 @@ chaves.get_velocidade_correnteza(velocidade)
 
 
 
-for i in range(4):
-
-    list_all_collects[i]['imagem'] = pygame.image.load(list_all_collects[i]['imagem']).convert_alpha()
-
-    if i == 3: # adicionando os objetos bola à lista de obstáculos
-
-        for bola in list_all_collects[i]['lista completa']:
-            obstaculos.append(bola.rect)
-
-
-
-
-
-
-
 # APAGAR
 
 #loop do jogo
@@ -195,8 +180,7 @@ while run:
 
                     teclas = pygame.key.get_pressed()
                     chaves.mover(teclas, obstaculos)
-
-                    PreenchSeguintes()# APAGAR
+# APAGAR
                     
 
                     # resetando scroll 
