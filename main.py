@@ -38,7 +38,7 @@ class Collectible:
 
     def movement(self):
 
-        self.x_pos -= 10
+        self.x_pos -= 7
 
         if self.x_pos < -2 * self.largura: # in order to make the collectible disappear from the screen, but stop being drawn
             self.out_of_screen = True
@@ -132,6 +132,7 @@ tempo = pygame.time.get_ticks()
 #loop do jogo
 run = True
 morte = False
+
 while run:
         
         tela.fill((0,0,0))
@@ -169,8 +170,14 @@ while run:
                         tempo_ultima_onda = tempo_atual
 
                     for item in itens_ativos[:]:
-                        item.movement()
-                        item.draw_collec(tela)
+
+                        if chaves.rect.colliderect(item.rect):
+
+                            item.collided = True 
+
+                        if not item.collided and not item.out_of_screen:
+                            item.movement()
+                            item.draw_collec(tela)
                     
                     # resetando scroll 
                     if abs(scroll) > imagem_comprimento:
@@ -181,16 +188,17 @@ while run:
                         if event.type == pygame.QUIT:
                             run = False
 
-                    if velocidade >= 6:
-                        velocidade = 6
+                    if velocidade >= 8:
+                        velocidade = 8
                     else: 
-                        velocidade += 0.001
+                        velocidade += 0.003
 
                     chaves.get_velocidade_correnteza(velocidade)
 
-                    if chaves.get_colisao_barreira_morte(): #codicao de morte do chaves obs: tem que resetar o coletaveis se derrota por isso
+                    if chaves.get_colisao_barreira_morte(): #condicao de morte do chaves obs: tem que resetar o coletaveis se derrota por isso
                         morte = True
                         menu_do_jogo.running = True
+                        itens_ativos = []
 
                     # fiz esse ELSE para não ocorrer o seguinte bug: o jogador morre ao chegar no limite esquerdo e o Chaves era desenhado mais uma vez na tela
                     else:
