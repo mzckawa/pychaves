@@ -9,6 +9,7 @@ class Jogador:
         imagem = pygame.image.load("imagens_jogo/Chaves.png").convert_alpha()
         self.imagem = pygame.transform.scale(imagem, (largura, altura))  # Redimensiona para caber no retângulo
         self.barreira_morte = pygame.Rect(-100 , 0, 1, 640)
+        self.tamarindo = False
     
     def mover(self, teclas, obstaculos):
         movimento = pygame.Vector2(0, 0)
