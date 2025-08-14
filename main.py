@@ -2,6 +2,7 @@ import pygame
 import math
 from personagem import Jogador
 from creditos import classe_creditos
+from tela_final import classe_tela_final
 from random import randint
 import random
 
@@ -18,29 +19,30 @@ comprimento_tela = 860
 largura_tela = 640
 
 #criando a tela
-tela = pygame.display.set_mode((comprimento_tela, largura_tela))
+tela = pygame.display.set_mode((comprimento_tela, largura_tela), )
 pygame.display.set_caption("pychaves")
 imagem_chapeu= pygame.image.load("imagens_jogo/chapeu_chaves.png")
 pygame.display.set_icon(imagem_chapeu)
 
 
 def placar(quant_vida, passagens, imagem_sanduiches_vida, imagem_passagens):
-    fonte = pygame.font.SysFont("arial", 40, True, True)
+    fonte = pygame.font.Font("Press_Start_2P/PressStart2P-Regular.ttf", 35) 
     
-    imagem_sanduiches_vida = pygame.transform.scale(imagem_sanduiches_vida, (30, 30))
-    imagem_passagens = pygame.transform.scale(imagem_passagens, (30, 30))
+    imagem_sanduiches_vida = pygame.transform.scale(imagem_sanduiches_vida, (60, 60))
+    imagem_passagens = pygame.transform.scale(imagem_passagens, (60, 60))
 
     passagens_escrito = f":{passagens}/7"
-    vida = f':{quant_vida}'
+    vida = f":{quant_vida}"
 
     texto_vida = fonte.render(vida, True, (255, 255, 255))
     texto_passagens = fonte.render(passagens_escrito, True, (255, 255, 255))
 
-    tela.blit(imagem_sanduiches_vida, (20, 70))
+    tela.blit(imagem_sanduiches_vida, (20, 80))
     tela.blit(imagem_passagens, (20, 10))
     
-    tela.blit(texto_vida, (50, 70))
-    tela.blit(texto_passagens, (50, 10))
+    tela.blit(texto_vida, (75, 95))
+    tela.blit(texto_passagens, (75, 25))
+
 
 
 class Collectible:
@@ -98,8 +100,8 @@ def criar_onda(list_all_collects):
 
     # --- 2) Coletáveis opcionais ---
     for y in posicoes_disponiveis:
-        if random.random() < 0.2:  # 60% de chance de aparecer algo
-            colet_info = random.choices([item for item in list_all_collects if item['nome'] != 'bola'], weights=[0.6, 0.2, 0.2])[0] # escolhe aleatoriamente entre os outros tipos de coletáveis
+        if random.random() < 0.2:  # 30% de chance de aparecer algo
+            colet_info = random.choices([item for item in list_all_collects if item['nome'] != 'bola'], weights=[0.6, 0.3, 0.2])[0] # escolhe aleatoriamente entre os outros tipos de coletáveis
             novo_colet = Collectible(
                 x_pos = comprimento_tela,
                 y_pos = y,
@@ -133,14 +135,29 @@ img_go = pygame.transform.scale(img_go, (384, 256))
 imagem_sanduiches_vida = pygame.image.load("imagens_jogo/sanduiche_vida.png")
 imagem_passagens = pygame.image.load("imagens_jogo/passagem.png")
 
+chaves_img_normal = pygame.image.load("imagens_jogo/Chaves.png").convert_alpha()
+chaves_img_dano = pygame.image.load("imagens_jogo/Chaves_vermelho.png").convert_alpha()
+chaves_img_tamarindo = pygame.image.load("imagens_jogo/Chaves_laranja.png").convert_alpha()
+
+# Ajuste para o tamanho do personagem
+chaves_img_normal = pygame.transform.scale(chaves_img_normal, (100, 100))
+chaves_img_dano = pygame.transform.scale(chaves_img_dano, (100, 100))
+chaves_img_tamarindo = pygame.transform.scale(chaves_img_tamarindo, (100, 100))
+
 #define tempo do jogo
 clock = pygame.time.Clock()
 FPS = 60 
 
 #receber a imagem dos arquivos
 imagem_cenario = pygame.image.load("imagens_jogo/cenario_jogo.jpg").convert()
+nuvem1 = pygame.image.load("imagens_jogo/nuvem.png").convert_alpha()
+nuvem2 = pygame.image.load("imagens_jogo/nuvem2.png").convert_alpha()
+nuvem3 = pygame.image.load("imagens_jogo/nuvem_mexendo.png").convert_alpha()
+sol = pygame.image.load("imagens_jogo/Sol.png").convert_alpha()
+
 #convercao da imagem
 imagem_cenario = pygame.transform.scale(imagem_cenario, (2*comprimento_tela/3, largura_tela))
+sol = pygame.transform.scale(sol, (130,130))
 imagem_comprimento = imagem_cenario.get_width()
 
 # criando o menu do jogo
@@ -155,6 +172,8 @@ partes = math.ceil(comprimento_tela/imagem_comprimento) + 2
 print(partes)
 
 chaves = Jogador(400, 400, 100, 100)
+chaves.imagem = chaves_img_normal
+
 obstaculos = [
     pygame.Rect(0 , 300, 860, 10),
     pygame.Rect(860 , 0, 1, 640),
@@ -172,6 +191,8 @@ run = True
 morte = False
 
 tempo_tamarindo = - 4000
+
+tempo_dano = 0
 
 while run:
         
@@ -192,6 +213,7 @@ while run:
                 scroll = 0
                 vida = 3
                 passagens = 0
+                jogador_ganhou = False
                 
                 tempo_inicial = pygame.time.get_ticks()
                 tempo_ultima_onda = pygame.time.get_ticks() + 3000
@@ -201,7 +223,11 @@ while run:
                 
                 itens_ativos = []
 
-                while (not morte) and run:
+                musica_durante_jogo = pygame.mixer.music.load("music/Abertura.ogg")
+                pygame.mixer.music.set_volume(.7)
+                pygame.mixer.music.play(-1)
+
+                while (not morte) and run and (not jogador_ganhou):
 
                     clock.tick(FPS)
                     chaves.get_velocidade_correnteza(velocidade)
@@ -211,6 +237,13 @@ while run:
                     for i in range (0, partes):
                         tela.blit(imagem_cenario, (i * imagem_comprimento + scroll, 0))
                     placar(vida, passagens, imagem_sanduiches_vida, imagem_passagens)
+
+                    #Nuvens e Sol
+                    tela.blit(sol, (700,20))
+                    tela.blit(nuvem1, (100, 90))
+                    tela.blit(nuvem2, (400, 20))
+                    tela.blit(nuvem3, (500, 100))
+                    
 
                     scroll -= velocidade
                     
@@ -243,33 +276,45 @@ while run:
                     
                     vida_antes = vida 
 
-                    for item in itens_ativos[:]:
+                    # Fora do loop principal:
+                    tempo_ultimo_dano = 0  # registra quando levou dano
 
+                    # Dentro do loop de colisão:
+                    for item in itens_ativos[:]:
                         if chaves.rect.colliderect(item.rect):
-                            
                             item.collided = True
 
                             if item.nome == 'tamarindo':
-                                tempo_tamarindo = pygame.time.get_ticks() # "reseta" o tempo, contando a partir do momento atual. Isso por se só já verifica se há tamarindos disponíveis ou nãoo
-                                itens_ativos.remove(item) 
+                                tempo_tamarindo = pygame.time.get_ticks()
+                                itens_ativos.remove(item)
+
+                                chaves.imagem = chaves_img_tamarindo
+
                             elif item.nome == 'bola':
-                                itens_ativos.remove(item) 
-                                
-                                if pygame.time.get_ticks() - tempo_tamarindo > 4000: # fazendo a animação de dano, caso Chaves não possua tamarindos para protegê-lo
-                                    
-                                    vida -= 1 
+                                itens_ativos.remove(item)
+                                if pygame.time.get_ticks() - tempo_tamarindo > 4000:
+                                    vida -= 1
+                                    tempo_ultimo_dano = pygame.time.get_ticks()  # registra o dano
+                                    chaves.imagem = chaves_img_dano
+                                    tempo_dano = pygame.time.get_ticks()
 
                                     if vida == 0:
                                         morte = True
                                         menu_do_jogo.running = True
 
-                            elif item.nome == 'sanduiche' and vida < 3:
-                                itens_ativos.remove(item) 
-                                vida += 1
+                            elif item.nome == 'sanduiche':
+                                itens_ativos.remove(item)
+                                # só cura se não levou dano há menos de 500 ms
+                                if vida < 3 and (pygame.time.get_ticks() - tempo_ultimo_dano > 500):
+                                    vida += 1
 
                             elif item.nome == 'passagem':
                                 itens_ativos.remove(item) 
                                 passagens += 1
+
+                                if passagens == 7:
+
+                                    jogador_ganhou = True
                                     
                         if not item.collided and not item.out_of_screen:
                             item.movement()
@@ -297,9 +342,51 @@ while run:
 
                     # fiz esse ELSE para não ocorrer o seguinte bug: o jogador morre ao chegar no limite esquerdo e o Chaves era desenhado mais uma vez na tela
                     else:
+
+                        if tempo_dano != 0 and pygame.time.get_ticks() - tempo_dano > 200:
+                            chaves.imagem = chaves_img_normal
+                            tempo_dano = 0
+
+                        elif pygame.time.get_ticks() - tempo_tamarindo > 4000:
+
+                            chaves.imagem = chaves_img_normal
+                            
                         chaves.desenhar(tela)
 
                     pygame.display.update()
+
+                pygame.mixer.music.stop()
+
+                pygame.mixer.music.unload()
+
+                # colocar tela final aqui fora do jogo
+                if not morte and jogador_ganhou:
+
+                    tela_final = classe_tela_final(tela, True)
+
+                    tela_final.rodando_tela_final()
+
+                    if tela_final.fechar_janela:
+
+                        run = False
+
+                    else:
+
+                        menu_do_jogo.running = True
+
+                elif morte:
+
+                    tela_final = classe_tela_final(tela, False)
+                    
+                    tela_final.rodando_tela_final()
+
+                    if tela_final.fechar_janela:
+
+                        run = False
+
+                    else:
+
+                        menu_do_jogo.running = True
                     
             # verificando se o jogador apertou o botão credits
             elif menu_do_jogo.selected_index == 1:
