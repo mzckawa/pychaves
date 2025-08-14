@@ -30,7 +30,7 @@ def placar(quant_vida, passagens, imagem_sanduiches_vida, imagem_passagens):
     imagem_sanduiches_vida = pygame.transform.scale(imagem_sanduiches_vida, (30, 30))
     imagem_passagens = pygame.transform.scale(imagem_passagens, (30, 30))
 
-    passagens_escrito = f":{passagens}/7"
+    passagens_escrito = f":{passagens}/6"
     vida = f':{quant_vida}'
 
     texto_vida = fonte.render(vida, True, (255, 255, 255))
@@ -142,10 +142,14 @@ chaves_img_dano = pygame.transform.scale(chaves_img_dano, (100, 100))
 
 #define tempo do jogo
 clock = pygame.time.Clock()
-FPS = 60 
+FPS = 60
 
 #receber a imagem dos arquivos
-imagem_cenario = pygame.image.load("imagens_jogo/cenario_jogo.jpg").convert()
+imagem_cenario = pygame.image.load("imagens_jogo/cenario_jogo.jpg").convert_alpha()
+nuvem1_cenario = pygame.image.load("imagens_jogo/nuvem_mexendo.png").convert_alpha()
+nuvem2_cenario = pygame.image.load("imagens_jogo/nuvem.png").convert_alpha()
+nuvem3_cenario = pygame.image.load("imagens_jogo/nuvem2.png").convert_alpha()
+
 #convercao da imagem
 imagem_cenario = pygame.transform.scale(imagem_cenario, (2*comprimento_tela/3, largura_tela))
 imagem_comprimento = imagem_cenario.get_width()
@@ -218,10 +222,16 @@ while run:
                     chaves.get_velocidade_correnteza(velocidade)
 
                     tempo = pygame.time.get_ticks()
+
                     #cenario infinito
                     for i in range (0, partes):
                         tela.blit(imagem_cenario, (i * imagem_comprimento + scroll, 0))
                     placar(vida, passagens, imagem_sanduiches_vida, imagem_passagens)
+
+                    #Imagens das núvens
+                    tela.blit(nuvem1_cenario, (300, 10))
+                    tela.blit(nuvem2_cenario, (50, 150))
+                    tela.blit(nuvem3_cenario, (600, 80))
 
                     scroll -= velocidade
                     
@@ -251,22 +261,20 @@ while run:
                     if tempo_atual - tempo_ultima_onda >= intervalo_ondas:
                         criar_onda(list_all_collects)
                         tempo_ultima_onda = tempo_atual
-                    
-                    vida_antes = vida 
 
                     for item in itens_ativos[:]:
 
-                        if chaves.rect.colliderect(item.rect):
+                        if chaves.rect.colliderect(item.rect) and not item.collided:
                             
                             item.collided = True
 
                             if item.nome == 'tamarindo':
-                                tempo_tamarindo = pygame.time.get_ticks() # "reseta" o tempo, contando a partir do momento atual. Isso por se só já verifica se há tamarindos disponíveis ou nãoo
-                                itens_ativos.remove(item) 
-                            elif item.nome == 'bola':
-                                itens_ativos.remove(item) 
+                                tempo_tamarindo = pygame.time.get_ticks() # "reseta" o tempo, contando a partir do momento atual. Isso por se só já verifica se há tamarindos disponíveis ou não
                                 
-                                if pygame.time.get_ticks() - tempo_tamarindo > 4000: # fazendo a animação de dano, caso Chaves não possua tamarindos para protegê-lo
+                            elif item.nome == 'bola':
+                                
+                                
+                                if pygame.time.get_ticks() - tempo_tamarindo > 4000: # dando o dano, caso Chaves não possua tamarindos para protegê-lo
                                     
                                     vida -= 1 
                                     chaves.imagem = chaves_img_dano
@@ -277,17 +285,18 @@ while run:
                                         menu_do_jogo.running = True
 
                             elif item.nome == 'sanduiche' and vida < 3:
-                                itens_ativos.remove(item) 
                                 vida += 1
 
                             elif item.nome == 'passagem':
-                                itens_ativos.remove(item) 
                                 passagens += 1
+                                
+                            if item in itens_ativos:
+                                itens_ativos.remove(item)
                                     
                         if not item.collided and not item.out_of_screen:
                             item.movement()
                             item.draw_collec(tela)
-                    
+
                     # resetando scroll 
                     if abs(scroll) > imagem_comprimento:
                         scroll = 0
