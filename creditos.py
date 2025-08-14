@@ -60,6 +60,8 @@ class classe_creditos:
 
         pygame.mixer.music.load("music/Elefante Branco 2.ogg")
 
+        pygame.mixer.music.set_volume(.7)
+
         # tocando a música de fundo. O "-1" significa que, quando a música parar, ela deve tocar novamente se eu ainda estiver na tela dos créditos
         pygame.mixer.music.play(-1)
 
